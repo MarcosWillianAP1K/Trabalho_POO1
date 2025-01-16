@@ -213,18 +213,12 @@ class REPOSITOR(FUNCIONARIO):
         prateleira.retirar_quantidade_produto(produto, quantidade)
         self._historico_movimentacao_pessoal.adicionar_item('Retirou quantidade', produto)
     
-                  
-
-        
-    
-
 
 class GERENTE(FUNCIONARIO):
     
         
     def __str__(self):
         return f'Gerente: {self.nome}\nID: {self._id}\n'
-
 
 
 class ESTOQUE(IDENTIFICADOR):
@@ -314,8 +308,4 @@ class SISTEMA:
     
     
         
-        
-        
     
-        
-        
