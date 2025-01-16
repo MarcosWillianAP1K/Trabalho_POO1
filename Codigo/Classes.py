@@ -31,7 +31,7 @@ class PRODUTO(IDENTIFICADOR):
         self._tipo = tipo
         
     def __str__(self):
-        return f'Produto: {self._nome}, Preço: {self._preco}, Tipo: {self._tipo}'
+        return f'ID: {self._id}\nProduto: {self.nome}\nPreço: {self._preco}\nTipo: {self._tipo}'
 
 
 class HISTORICO(abc.ABC):
@@ -47,28 +47,25 @@ class HISTORICO(abc.ABC):
         return "\n".join(self._historico)
 
 
-class HISTORICO_MOVIMENTACAO():
+class HISTORICO_MOVIMENTACAO(HISTORICO):
     
     def adicionar_item(self, tipo:str, produto:PRODUTO):
-        self._movimentacoes.append(f'{tipo}\n{produto.nome}')
+        self._historico.append(f'{tipo}:\n{str(produto)}')
         
-    def __str__(self):
-        return "\n".join(self._movimentacoes)
     
     
-class HISTORICO_TRANSACOES():
+class HISTORICO_TRANSACOES(HISTORICO):
     
     def adicionar_item(self, tipo:str, valor:float):
-        self._transacoes.append(f'{tipo}: R${valor}')
+        self._historico.append(f'{tipo}: R${valor}')
         
         
-class HISTORICO_COMPRAS():
+class HISTORICO_COMPRAS(HISTORICO):
         
     def adicionar_item(self, produto:PRODUTO, quantidade:int):
-        self._compras.append(f'{produto.nome}: {quantidade}')
+        self._historico.append(f'ID: {produto.ID}\nProduto: {produto.nome}\nQuantidade: {quantidade}\nValor: R${produto._preco * quantidade}\n')
         
-    def __str__(self):
-        return "\n".join(self._compras)
+    
         
 
 class PRATELEIRA(IDENTIFICADOR):
@@ -107,7 +104,7 @@ class PRATELEIRA(IDENTIFICADOR):
         
     def __str__(self):
         produtos_str = "\n".join(str(pro) for pro in self._produtos.values())
-        return f'Prateleira {self._id}: {self.nome}\nProdutos:{produtos_str}\n'
+        return f'Prateleira {self._id}: {self.nome}\nProdutos:\n{produtos_str}\n'
     
 
 class SACOLA_DE_COMPRAS:
@@ -188,7 +185,7 @@ class FUNCIONARIO(IDENTIFICADOR):
     
     @salario.setter
     def salario(self, salario:float):
-        if salario > 0:
+        if salario >= 1500:
             self._salario = salario
     
     def __str__(self):
@@ -236,8 +233,16 @@ class ESTOQUE(IDENTIFICADOR):
         self._estoque.remove(produto)
         self._historico_movimentacao_geral.adicionar_item('Removeu produto', produto)
         
-    def __str__(self):
+    @property
+    def estoque(self):
         return "\n".join(str(pro) for pro in self._estoque)
+    
+    @property
+    def historico_movimentacao_geral(self):
+        return self._historico_movimentacao_geral
+        
+    def __str__(self):
+        return f'Estoque {self._id}: {self.nome}'
 
    
 class SISTEMA:
@@ -250,7 +255,7 @@ class SISTEMA:
         self._gerentes = []
         
     
-    def criar_id():
+    def criar_id(self):
         return random.randint(1, 999)
     
     def conferir_id(self, id:int, lista):
@@ -261,7 +266,7 @@ class SISTEMA:
     
     def atribuir_id(self, lista):
         while True:
-            id = self.atribuir_id()
+            id = self.criar_id()
             if not self.conferir_id(id, lista):
                 return id
         
