@@ -39,9 +39,16 @@ class HISTORICO(abc.ABC):
     def __init__(self):
         self._historico = []
         
+    @property
+    def historico(self):
+        return self._historico
+        
     @abc.abstractmethod
     def adicionar_item(self, item):
         pass
+    
+    def __iter__(self):
+        return iter(self._historico)  # Torna o histórico iterável
     
     def __str__(self):
         return "\n".join(self._historico)
@@ -74,6 +81,10 @@ class PRATELEIRA(IDENTIFICADOR):
         super().__init__(nome)
         self._produtos = []
         
+    @property
+    def produtos(self):
+        return self._produtos
+        
         
     def adicionar_produto(self, produto:PRODUTO):
         
@@ -103,7 +114,7 @@ class PRATELEIRA(IDENTIFICADOR):
                 
         
     def __str__(self):
-        produtos_str = "\n".join(str(pro) for pro in self._produtos.values())
+        produtos_str = "\n".join(str(produto) for produto in self._produtos)
         return f'Prateleira {self._id}: {self.nome}\nProdutos:\n{produtos_str}\n'
     
 
@@ -155,19 +166,27 @@ class CLIENTE(IDENTIFICADOR):
     def saldo(self):
         return self._saldo
     
+    @property
+    def historico_compras(self):
+        return self._historico_compras
+    
+    @property
+    def historico_transacoes(self):
+        return self._historico_transacoes
+        
     def adicionar_saldo(self, valor:float):
         
         if valor > 0:
             self._saldo += valor
-            self._historico_transacoes.append(f'Deposito de R${valor}')
+            self._historico_transacoes.adicionar_item('Depósito', valor)
             
     def remover_saldo(self, valor:float):
         
         if valor > 0 and valor <= self._saldo:
             self._saldo -= valor
-            self._historico_transacoes.append(f'Saque de R${valor}')
-            
-            
+            self._historico_transacoes.adicionar_item('Saque', valor)
+    
+
     def __str__(self):
         return f'Cliente: {self.nome}\nID: {self._id}\nSaldo: {self._saldo}\n'
 
@@ -225,6 +244,14 @@ class ESTOQUE(IDENTIFICADOR):
         self._estoque = []
         self._historico_movimentacao_geral = HISTORICO_MOVIMENTACAO()
         
+    @property
+    def estoque(self):
+        return self._estoque
+    
+    @property
+    def historico_movimentacao_geral(self):
+        return self._historico_movimentacao_geral
+        
     def adicionar_produto(self, produto:PRODUTO):
         self._estoque.append(produto)
         self._historico_movimentacao_geral.adicionar_item('Adicionou produto', produto)
@@ -233,13 +260,6 @@ class ESTOQUE(IDENTIFICADOR):
         self._estoque.remove(produto)
         self._historico_movimentacao_geral.adicionar_item('Removeu produto', produto)
         
-    @property
-    def estoque(self):
-        return "\n".join(str(pro) for pro in self._estoque)
-    
-    @property
-    def historico_movimentacao_geral(self):
-        return self._historico_movimentacao_geral
         
     def __str__(self):
         return f'Estoque {self._id}: {self.nome}'
@@ -251,8 +271,34 @@ class SISTEMA:
         self._estoque = []
         self._prateleiras = []
         self._clientes = []
-        self._funcionarios = []
+        self._repositores = []
         self._gerentes = []
+        
+        
+        
+    @property
+    def estoques(self):
+        return self._estoque
+    
+    
+    @property
+    def prateleiras(self):
+        return self._prateleiras
+    
+    @property
+    def clientes(self):
+        return self._clientes
+    
+    @property
+    def repositores(self):
+        return self._repositores
+    
+    @property
+    def gerentes(self):
+        return self._gerentes
+    
+    
+        
         
     
     def criar_id(self):
@@ -287,13 +333,16 @@ class SISTEMA:
         cliente.ID = self.atribuir_id(self._clientes)
         self._clientes.append(cliente)
         
-    def adicionar_funcionario(self, funcionario:FUNCIONARIO):
-        funcionario.ID = self.atribuir_id(self._funcionarios)
-        self._funcionarios.append(funcionario)
+    def adicionar_repositor(self, repositor:REPOSITOR):
+        repositor.ID = self.atribuir_id(self._repositores)
+        self._repositores.append(repositor)
         
     def adicionar_gerente(self, gerente:GERENTE):
         gerente.ID = self.atribuir_id(self._gerentes)
         self._gerentes.append(gerente)
+        
+    def remover_gerente(self, gerente:GERENTE):
+        self._gerentes.remove(gerente)    
         
     def remover_estoque(self, estoque:ESTOQUE):
         self._estoque.remove(estoque)
@@ -304,8 +353,8 @@ class SISTEMA:
     def remover_cliente(self, cliente:CLIENTE):
         self._clientes.remove(cliente)
 
-    def remover_funcionario(self, funcionario:FUNCIONARIO):
-        self._funcionarios.remove(funcionario)
+    def remover_repositor(self, repositor:REPOSITOR):
+        self._repositores.remove(repositor)
 
         
     

@@ -29,4 +29,65 @@ def testes_adicionar_produto():
     print()
     print(estoque)
 
-testes_adicionar_produto()
+# testes_adicionar_produto()
+
+
+
+
+def teste_sistema():
+    import Classes as c
+    
+    sistema = c.SISTEMA()
+    estoque = c.ESTOQUE("teste")
+    prateleira = c.PRATELEIRA("teste")
+    cliente = c.CLIENTE("teste")
+    gerente = c.GERENTE("teste", 1500)
+    repositor = c.REPOSITOR("teste", 1500)
+    
+    cliente.adicionar_saldo
+    
+    sistema.adicionar_estoque(estoque)
+    sistema.adicionar_prateleira(prateleira)
+    sistema.adicionar_cliente(cliente)
+    sistema.adicionar_gerente(gerente)
+    sistema.adicionar_repositor(repositor)
+    
+    # sistema.remover_estoque(estoque)
+    # sistema.remover_prateleira(prateleira)
+    # sistema.remover_cliente(cliente)
+    # sistema.remover_gerente(gerente)
+    # sistema.remover_repositor(repositor)
+    
+    produto = c.PRODUTO("teste", 15, "teste")
+
+    sistema.estoques[0].adicionar_produto(produto)
+    sistema.prateleiras[0].adicionar_produto(produto)
+
+    sistema.clientes[0].adicionar_saldo(100)  
+    
+    for e in sistema.estoques:
+        print(e)
+        for p in e.historico_movimentacao_geral:
+            print(p)
+    print()
+    
+    for p in sistema.prateleiras:
+        print(p)
+    print()
+    
+    for c in sistema.clientes:
+        print(c)
+        print(c.historico_transacoes)
+    print()
+    
+    for f in sistema.repositores:
+        print(f)
+    print()
+    
+    for g in sistema.gerentes:
+        print(g)
+    print()
+
+    
+teste_sistema()
+
