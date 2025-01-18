@@ -43,6 +43,7 @@ def teste_sistema():
     cliente = c.CLIENTE("teste")
     gerente = c.GERENTE("teste", 1500)
     repositor = c.REPOSITOR("teste", 1500)
+    produto = c.PRODUTO("teste", 15, "teste")
     
     cliente.adicionar_saldo
     
@@ -51,6 +52,7 @@ def teste_sistema():
     sistema.adicionar_cliente(cliente)
     sistema.adicionar_gerente(gerente)
     sistema.adicionar_repositor(repositor)
+    sistema.adicionar_produto(produto)
     
     # sistema.remover_estoque(estoque)
     # sistema.remover_prateleira(prateleira)
@@ -58,21 +60,22 @@ def teste_sistema():
     # sistema.remover_gerente(gerente)
     # sistema.remover_repositor(repositor)
     
-    produto = c.PRODUTO("teste", 15, "teste")
 
-    sistema.estoques[0].adicionar_produto(produto)
-    sistema.prateleiras[0].adicionar_produto(produto)
+    sistema.estoques[0].adicionar_produto(produto, 10)
+    sistema.repositores[0].adicionar_produto_prateleira(sistema.prateleiras[0], produto, 10)
 
-    sistema.clientes[0].adicionar_saldo(100)  
+    sistema.clientes[0].adicionar_saldo(100)
+    sistema.clientes[0].remover_saldo(50)
     
     for e in sistema.estoques:
         print(e)
-        for p in e.historico_movimentacao_geral:
+        for p in e.historico_movimentacao_estoque:
             print(p)
     print()
     
     for p in sistema.prateleiras:
         print(p)
+        p.exibir_produtos()
     print()
     
     for c in sistema.clientes:
@@ -82,6 +85,9 @@ def teste_sistema():
     
     for f in sistema.repositores:
         print(f)
+        for p in f.historico_movimentacao_pessoal:
+            print(p)
+        
     print()
     
     for g in sistema.gerentes:
