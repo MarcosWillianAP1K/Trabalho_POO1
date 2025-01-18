@@ -1,6 +1,5 @@
 import Classes as c
 
-
 def testes_iniciar_classes():
     teste = c.SISTEMA()
     teste = c.ESTOQUE("teste")

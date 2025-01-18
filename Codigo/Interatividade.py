@@ -3,11 +3,16 @@ import Funcoes_sistema as f
 
 
 
-
-
 def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
     
+    if cliente == None or Sistema_principal == None:
+        print("Nenhum cliente cadastrado")
+        f.pausar_terminal()
+        return
+    
     while(True):
+        f.limpar_terminal()
+        
         print(f"Bem vindo cliente {cliente.nome}")
         print("Selecione uma opcao:")
         print("1 - Ver produtos")
@@ -15,7 +20,7 @@ def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
         print("3 - Finalizar compra")
         print("4 - Ver historico de compras")
         print("5 - Ver historico de transacoes")
-        print("0 - Sair")
+        print("0 - Voltar")
         
         opcao = str(input("Digite a opcao desejada: "))
         
@@ -33,19 +38,27 @@ def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
             break
         else:
             print("Opcao invalida")
+            f.pausar_terminal()
 
 
 
 def menu_repositor(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR):
     
+    if repositor == None or Sistema_principal == None:
+        print("Nenhum repositor cadastrado")
+        f.pausar_terminal()
+        return
+    
     while(True):
+        f.limpar_terminal()
+        
         print(f"Bem vindo repositor {repositor.nome}")
         print("Selecione uma opcao:")
         print("1 - Ir para estoque")
         print("2 - Ir para prateleira")
         print("3 - Ver sacola")
         print("4 - Ver historico de movimentacao")
-        print("0 - Sair")
+        print("0 - Voltar")
         
         opcao = str(input("Digite a opcao desejada: "))
         
@@ -57,12 +70,20 @@ def menu_repositor(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR
             break
         else:
             print("Opcao invalida")
+            f.pausar_terminal()
 
 
 
 def menu_gerente(Sistema_principal: f.clas.SISTEMA, gerente:f.clas.GERENTE):
     
+    if gerente == None or Sistema_principal == None:
+        print("Nenhum gerente cadastrado")
+        f.pausar_terminal()
+        return
+    
     while(True):
+        f.limpar_terminal()
+        
         print(f"Bem vindo gerente {gerente.nome}")
         print("Selecione uma opcao:")
         print("1 - Adicionar gerente")
@@ -77,12 +98,9 @@ def menu_gerente(Sistema_principal: f.clas.SISTEMA, gerente:f.clas.GERENTE):
         print("10 - Verificar repositores")
         print("11 - Verificar gerentes")
         print("12 - Verificar historico de movimentacao geral")
-        print("13 - Verificar historico de movimentacao de estoque")
-        print("14 - Verificar historico de repositor")
-        print("15 - Verificar historico de cliente")
-        print("16 - Verificar historico de compras geral")
-        print("17 - Verificar historico de vendas geral")
-        print("0 - Sair")
+        print("13 - Verificar historico de compras geral")
+        print("14 - Verificar historico de vendas geral")
+        print("0 - Voltar")
         
         opcao = str(input("Digite a opcao desejada: "))
         
@@ -104,6 +122,7 @@ def menu_gerente(Sistema_principal: f.clas.SISTEMA, gerente:f.clas.GERENTE):
             break
         else:
             print("Opcao invalida")
+            f.pausar_terminal()
 
 
 
@@ -111,6 +130,8 @@ def menu_gerente(Sistema_principal: f.clas.SISTEMA, gerente:f.clas.GERENTE):
 def menu_inicial(Sistema_principal: f.clas.SISTEMA):
     
     while(True):
+        f.limpar_terminal()
+        
         print("Bem vindo ao sistema de supermercado")
         print("Selecione uma conta para acessar:")
         print("1 - Gerente")
@@ -121,13 +142,14 @@ def menu_inicial(Sistema_principal: f.clas.SISTEMA):
         opcao = str(input("Digite a opcao desejada: "))
         
         if opcao == "1":
-            pass
+            menu_gerente(Sistema_principal, f.verificar_gerente(Sistema_principal))
         elif opcao == "2":
-            pass
+            menu_repositor(Sistema_principal, f.verificar_repositor(Sistema_principal))
         elif opcao == "3":
-            pass
+            menu_cliente(Sistema_principal, f.verificar_cliente(Sistema_principal))
         elif opcao == "0":
             break
         else:
             print("Opcao invalida")
+            f.pausar_terminal()
             

@@ -372,20 +372,44 @@ class SISTEMA:
         return self._historico_movimentacao_geral
     
     
-    def exibir_historico_vendas(self):
+    
+    def exibir_historico_vendas_geral(self):
         for venda in self._historico_vendas_geral:
             print(venda, end='\n\n')
             
-    def exibir_historico_compras(self):
+    def exibir_historico_compras_geral(self):
         for compra in self._historico_compras_geral:
             print(compra, end='\n\n')
             
-    def exibir_historico_movimentacao(self):
+    def exibir_historico_movimentacao_geral(self):
         for movimentacao in self._historico_movimentacao_geral:
             print(movimentacao, end='\n\n')
             
-        
-        
+    def exibir_gerentes(self):
+        for gerente in self._gerentes:
+            print(gerente, end='\n\n')
+            
+    def exibir_repositores(self):
+        for repositor in self._repositores:
+            print(repositor, end='\n\n')
+            
+    def exibir_clientes(self):
+        for cliente in self._clientes:
+            print(cliente, end='\n\n')
+            
+    def exibir_prateleiras(self):
+        for prateleira in self._prateleiras:
+            print(prateleira, end='\n\n')
+            
+    def exibir_estoques(self):
+        for estoque in self._estoque:
+            print(estoque, end='\n\n')
+            
+    def exibir_produtos(self):
+        for produto in self._produtos:
+            print(produto, end='\n\n')
+            
+    
         
         
     
@@ -458,6 +482,4 @@ class SISTEMA:
     def remover_produto(self, produto:PRODUTO):
         self._produtos.remove(produto)
 
-        
     
-        
