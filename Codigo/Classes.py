@@ -30,6 +30,23 @@ class PRODUTO(IDENTIFICADOR):
         self._preco = preco
         self._tipo = tipo
         
+    @property
+    def preco(self):
+        return self._preco
+    
+    @preco.setter
+    def preco(self, preco:float):
+        if preco > 0:
+            self._preco = preco
+            
+    @property
+    def tipo(self):
+        return self._tipo
+    
+    @tipo.setter
+    def tipo(self, tipo:str):
+        self._tipo = tipo
+        
     def __str__(self):
         return f'ID: {self._id}\nProduto: {self.nome}\nPreço: {self._preco}\nTipo: {self._tipo}'
 
@@ -135,19 +152,19 @@ class SACOLA_DE_PRODUTOS:
         return self._preco_total
     
     
-    def adicionar_produto(self, produto:PRODUTO, quantidade:int):
+    def adicionar_produto(self, produto:PRODUTO, quantidade:int, local_origem):
         if produto in self._produtos:
-            self._produtos[produto] += quantidade
+            self._produtos[produto][0] += quantidade
         else:
-            self._produtos[produto] = quantidade
+            self._produtos[produto] = [quantidade, local_origem]
         
-        self._preco_total += produto._preco * self._produtos[produto]
+        self._preco_total += produto.preco * self._produtos[produto]
     
     def remover_produto(self, produto:PRODUTO, quantidade:int):
         if produto in self._produtos:
             if quantidade > 0 and quantidade <= self._produtos[produto]:
-                self._produtos[produto] -= quantidade
-                self._preco_total -= produto._preco * quantidade
+                self._produtos[produto][0] -= quantidade
+                self._preco_total -= produto.preco * quantidade
                 
             if self._produtos[produto] == 0:
                 self._produtos.pop(produto)
