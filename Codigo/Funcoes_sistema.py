@@ -15,28 +15,95 @@ def pausar_terminal():
 
 
 def criar_gerente(sistema:clas.SISTEMA ,nome:str, salario:float):
+    if nome == "" or salario < 1500:
+        print("Nome ou salario invalido")
+        pausar_terminal()
+        return
+    
     gerente = clas.GERENTE(nome, salario)
     sistema.adicionar_gerente(gerente)
     
 def criar_repositores(sistema:clas.SISTEMA, nome:str, salario:float):
+    if nome == "" or salario < 1500:
+        print("Nome ou salario invalido")
+        pausar_terminal()
+        return
+    
     repositor = clas.REPOSITOR(nome, salario)
     sistema.adicionar_repositor(repositor)
         
 def criar_clientes(sistema:clas.SISTEMA, nome:str):
+    if nome == "":
+        print("Nome invalido")
+        pausar_terminal()
+        return
+    
     cliente = clas.CLIENTE(nome)
     sistema.adicionar_cliente(cliente)
 
 def criar_produtos(sistema:clas.SISTEMA, nome:str, preco:float, quantidade:int):
+    if nome == "" or preco <= 0 or quantidade <= 0:
+        print("Nome, preco ou quantidade invalido")
+        pausar_terminal()
+        return None
+    
+    if len(sistema.estoques) == 0:
+        print("Nenhum estoque cadastrado")
+        pausar_terminal()
+        return None
+    
     produto = clas.PRODUTO(nome, preco, quantidade)
     sistema.adicionar_produto(produto)
     
+    return [produto, quantidade]
+    
 def criar_estoque(sistema:clas.SISTEMA, nome:str):
+    if nome == "":
+        print("Nome invalido")
+        pausar_terminal()
+        return None
+    
     estoque = clas.ESTOQUE(nome)
     sistema.adicionar_estoque(estoque)
+    
 
 def criar_prateleira(sistema:clas.SISTEMA, nome:str):
+    if nome == "":
+        print("Nome invalido")
+        pausar_terminal()
+        return
+    
     prateleira = clas.PRATELEIRA(nome)
     sistema.adicionar_prateleira(prateleira)
+    
+    
+def digitar_nome():    
+    nome = input("Digite o nome: ")
+    return nome
+
+def digitar_salario():
+    try:
+        salario = float(input("Digite o salario: "))
+    except:
+        return 0
+    
+    return salario
+    
+def digitar_preco():
+    try:
+        preco = float(input("Digite o preco: "))
+    except:
+        return 0
+    
+    return preco
+
+def digitar_quantidade():
+    try:
+        quantidade = int(input("Digite a quantidade: "))
+    except:
+        return 0
+    
+    return quantidade
     
 
 def selecionar_item(lista:list):
@@ -52,6 +119,7 @@ def selecionar_item(lista:list):
         
         for e in lista:
             if e.ID== id:
+                
                 return e
             
         return "nao encontrado"
@@ -182,6 +250,11 @@ def verificar_historico_vendas_geral(sistema:clas.SISTEMA):
     sistema.exibir_historico_vendas_geral()
 
 
+def exibir_conteudo_da_lista(lista:list):
+    
+    for e in lista:
+        print(e)
+        print()
 
 
 
@@ -201,4 +274,9 @@ def iniciar_sistema():
     criar_gerente(sistema, "gerente_inicial", 1500)
     criar_repositores(sistema, "repositor_inicial", 1500)
     criar_clientes(sistema, "cliente_inicial")
+    criar_estoque(sistema, "estoque_inicial")
+    criar_prateleira(sistema, "prateleira_inicial")
+    Produto = criar_produtos(sistema, "produto_inicial", 1.0, 1)
+    sistema.estoques[0].adicionar_produto(Produto[0], Produto[1])
+    
     return sistema

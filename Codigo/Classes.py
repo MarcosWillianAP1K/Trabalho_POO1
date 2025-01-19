@@ -309,7 +309,9 @@ class ESTOQUE(IDENTIFICADOR):
                 self._estoque.pop(produto)
                 
     
-    
+    def exibir_produtos_estoque(self):
+        for produto, quantidade in self._estoque.items():
+            print(f'{produto}\nQuantidade: {quantidade}\n')
         
         
         

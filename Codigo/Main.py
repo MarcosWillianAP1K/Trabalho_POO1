@@ -8,4 +8,4 @@ def main():
     inter.menu_inicial(Sistema)
     
 
-main()
+main() 
