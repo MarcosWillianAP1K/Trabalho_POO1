@@ -108,10 +108,10 @@ def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
         elif opcao == "5":
             cliente.remover_saldo(f.digitar_saldo())
         elif opcao == "6":
-            print(cliente.historico_compras)
+            f.exibir_conteudo_da_lista(cliente.historico_compras)
             f.pausar_terminal()
         elif opcao == "7":
-            print(cliente.historico_transacoes.historico)
+            f.exibir_conteudo_da_lista(cliente.historico_transacoes)
             f.pausar_terminal()
         elif opcao == "0":
             break
@@ -158,12 +158,12 @@ def menu_prateleira_repositor(Sistema_principal: f.clas.SISTEMA, repositor:f.cla
             produto = f.verificar_produto_prateleira(prateleira)
             
             if produto != None:
-                quantidade = f.digitar_quantidade(produto[0], produto[1][0])
+                quantidade = f.digitar_quantidade(produto[0], produto[1])
                 
                 if quantidade != None and quantidade > 0:
                 
                     repositor.sacola.adicionar_produto(produto[0], quantidade, prateleira)
-                    prateleira.pegar_produto(produto[0], quantidade)
+                    prateleira.retirar_produto(produto[0], quantidade)
                     repositor.adicionar_historico_movimentacao_pessoal("Retirou", produto[0], quantidade, prateleira)
                     Sistema_principal.adicionar_movimentacao_geral(str(repositor), prateleira ,"Retirou",produto[0], quantidade)
         

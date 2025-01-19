@@ -60,35 +60,39 @@ class HISTORICO(abc.ABC):
     @property
     def historico(self):
         return self._historico
+    
+    @historico.setter
+    def historico(self, historico:list):
+        self._historico = historico
         
     @abc.abstractmethod
     def adicionar_item(self, item):
         pass
     
     def __iter__(self):
-        return iter(self._historico)  # Torna o histórico iterável
+        return iter(self.historico)  # Torna o histórico iterável
     
     def __str__(self):
-        return "\n\n".join(self._historico)
+        return "\n\n".join(item for item in self.historico)
 
 
 class HISTORICO_MOVIMENTACAO(HISTORICO):
     
     def adicionar_item(self, tipo:str, produto:PRODUTO):
-        self._historico.append(f'{tipo}:\n{str(produto)}')
+        self.historico.append(f'{tipo}:\n{str(produto)}')
         
     
     
 class HISTORICO_TRANSACOES(HISTORICO):
     
     def adicionar_item(self, tipo:str, valor:float):
-        self._historico.append(f'{tipo}: R${valor}')
+        self.historico.append(f'{tipo}: R${valor}')
         
         
 class HISTORICO_COMPRAS(HISTORICO):
         
     def adicionar_item(self, produto:PRODUTO, quantidade:int):
-        self._historico.append(f'ID: {produto.ID}\nProduto: {produto.nome}\nQuantidade: {quantidade}\nValor: R${produto._preco * quantidade}\n')
+        self.historico.append(f'ID: {produto.ID}\nProduto: {produto.nome}\nQuantidade: {quantidade}\nValor: R${produto._preco * quantidade}\n')
         
     
         
@@ -106,34 +110,34 @@ class PRATELEIRA(IDENTIFICADOR):
         
     def adicionar_produto(self, produto:PRODUTO, quantidade:float):
         
-        if produto not in self._produtos:
-            self._produtos[produto] = quantidade
+        if produto not in self.produtos:
+            self.produtos[produto] = quantidade
         else:
-            self._produtos[produto] += quantidade
+            self.produtos[produto] += quantidade
         
         
     def retirar_produto(self, produto:PRODUTO, quantidade:float):
         
-        if produto in self._produtos:
-            if quantidade > 0 and quantidade <= self._produtos[produto]:
-                self._produtos[produto] -= quantidade
+        if produto in self.produtos:
+            if quantidade > 0 and quantidade <= self.produtos[produto]:
+                self.produtos[produto] -= quantidade
                 
-            if self._produtos[produto] == 0:
-                self._produtos.pop(produto)
+            if self.produtos[produto] == 0:
+                self.produtos.pop(produto)
             
     def remover_todos_produto(self, produto:PRODUTO):
-        self._produtos.pop(produto)
+        self.produtos.pop(produto)
         
     def esvaziar_prateleira(self):
-        self._produtos.clear()
+        self.produtos.clear()
             
     def exibir_produtos(self):
-        for produto, quantidade in self._produtos.items():
+        for produto, quantidade in self.produtos.items():
             print(f'{produto}\nQuantidade: {quantidade}\n')
                 
         
     def __str__(self):
-        return f'Prateleira {self._id}: {self.nome}'
+        return f'Prateleira {self.ID}: {self.nome}'
     
 
 class SACOLA_DE_PRODUTOS:
@@ -152,28 +156,35 @@ class SACOLA_DE_PRODUTOS:
     def preco_total(self):
         return self._preco_total
     
+    @preco_total.setter
+    def preco_total(self, preco:float):
+        if preco >= 0:
+            self._preco_total = preco
+        else :
+            self._preco_total = 0.0
+    
     
     def adicionar_produto(self, produto:PRODUTO, quantidade:float, local_origem):
         if produto in self._produtos:
-            self._produtos[produto][0] += quantidade
+            self.produtos[produto][0] += quantidade
         else:
-            self._produtos[produto] = [quantidade, local_origem]
+            self.produtos[produto] = [quantidade, local_origem]
         
-        self._preco_total += produto.preco * quantidade
+        self.preco_total = (self.preco_total + (produto.preco * quantidade))
     
     def remover_produto(self, produto:PRODUTO, quantidade:float):
         if produto in self._produtos:
             if quantidade > 0 and quantidade <= self._produtos[produto][0]:
-                self._produtos[produto][0] -= quantidade
-                self._preco_total -= produto.preco * quantidade
+                self.produtos[produto][0] -= quantidade
+                self.preco_total = (self.preco_total - (produto.preco * quantidade))
                 
-            if self._produtos[produto][0] == 0:
-                self._produtos.pop(produto)
+            if self.produtos[produto][0] == 0:
+                self.produtos.pop(produto)
         
     
     def limpar_sacola(self):
-        self._produtos.clear()
-        self._preco_total = 0.0
+        self.produtos.clear()
+        self.preco_total = 0.0
         
     def __str__(self):
         produtos_str = "\n\n".join(f'{pro}\nQuantidade: {quantidade[0]}' for pro, quantidade in self._produtos.items())
@@ -194,6 +205,13 @@ class CLIENTE(IDENTIFICADOR):
     def saldo(self):
         return self._saldo
     
+    @saldo.setter
+    def saldo(self, saldo:float):
+        if saldo >= 0:
+            self._saldo = saldo
+        else:
+            self._saldo = 0.0
+    
     @property
     def sacola(self):
         return self._sacola
@@ -207,22 +225,22 @@ class CLIENTE(IDENTIFICADOR):
         return self._historico_transacoes
     
     def finalizar_compra(self):
-        if self._sacola.preco_total <= self._saldo:
-            self._historico_compras.append(self.sacola)
-            self._saldo -= self.sacola.preco_total
-            self._sacola.limpar_sacola()
+        if self.sacola.preco_total <= self._saldo:
+            self.historico_compras.append(str(self.sacola))
+            self.saldo = (self.saldo - self.sacola.preco_total)
+            self.sacola.limpar_sacola()
         
     def adicionar_saldo(self, valor:float):
         
         if valor > 0:
-            self._saldo += valor
-            self._historico_transacoes.adicionar_item('Depósito', valor)
+            self.saldo = (self.saldo + valor)
+            self.historico_transacoes.adicionar_item('Depósito', valor)
             
     def remover_saldo(self, valor:float):
         
         if valor > 0 and valor <= self._saldo:
-            self._saldo -= valor
-            self._historico_transacoes.adicionar_item('Saque', valor)
+            self.saldo = (self.saldo - valor)
+            self.historico_transacoes.adicionar_item('Saque', valor)
     
 
     def __str__(self):
@@ -251,7 +269,7 @@ class FUNCIONARIO(IDENTIFICADOR):
     
     
     def __str__(self):
-        return f'Funcionário: {self.nome}\nID: {self._id}\nSalário: R${self._salario}'
+        return f'Funcionário: {self.nome}\nID: {self.ID}\nSalário: R${self.salario}'
 
 
 class REPOSITOR(FUNCIONARIO):
@@ -266,7 +284,7 @@ class REPOSITOR(FUNCIONARIO):
     
     
     def adicionar_historico_movimentacao_pessoal(self, tipo:str, produto:PRODUTO, quantidade:int, local):
-        self._historico_movimentacao_pessoal.adicionar_item(f'{tipo}: {quantidade}\nEm: {str(local)}', produto)
+        self.historico_movimentacao_pessoal.adicionar_item(f'{tipo}: {quantidade}\nEm: {str(local)}', produto)
     
         
     
@@ -298,39 +316,38 @@ class ESTOQUE(IDENTIFICADOR):
         
     def adicionar_produto(self, produto:PRODUTO, quantidade:float):
         
-        if produto not in self._estoque:
-            self._estoque[produto] = quantidade
+        if produto not in self.estoque:
+            self.estoque[produto] = quantidade
         else:
-            self._estoque[produto] += quantidade
-        
-        
-        self._historico_movimentacao_estoque.adicionar_item(f'Adicionou {quantidade} produto', produto)
+            self.estoque[produto] += quantidade
+           
+        self.historico_movimentacao_estoque.adicionar_item(f'Adicionou {quantidade} produto', produto)
         
     def pegar_produto(self, produto:PRODUTO, quantidade:float):
         
-        if produto in self._estoque:
-            if quantidade > 0 and quantidade <= self._estoque[produto]:
-                self._estoque[produto] -= quantidade
-                self._historico_movimentacao_estoque.adicionar_item(f'Removeu {quantidade} produto', produto)
+        if produto in self.estoque:
+            if quantidade > 0 and quantidade <= self.estoque[produto]:
+                self.estoque[produto] -= quantidade
+                self.historico_movimentacao_estoque.adicionar_item(f'Removeu {quantidade} produto', produto)
                 
-            if self._estoque[produto] == 0:
-                self._estoque.pop(produto)
+            if self.estoque[produto] == 0:
+                self.estoque.pop(produto)
                 
     
     def exibir_produtos_estoque(self):
-        for produto, quantidade in self._estoque.items():
+        for produto, quantidade in self.estoque.items():
             print(f'{produto}\nQuantidade: {quantidade}\n')
         
         
         
     def __str__(self):
-        return f'Estoque {self._id}: {self.nome}'
+        return f'Estoque {self.ID}: {self.nome}'
 
    
 class SISTEMA:
     
     def __init__(self):
-        self._estoque = []
+        self._estoques = []
         self._prateleiras = []
         self._clientes = []
         self._repositores = []
@@ -346,7 +363,7 @@ class SISTEMA:
         
     @property
     def estoques(self):
-        return self._estoque
+        return self._estoques
     
     
     @property
@@ -388,35 +405,35 @@ class SISTEMA:
             print(venda, end='\n\n')
             
     def exibir_historico_compras_geral(self):
-        for compra in self._historico_compras_geral:
+        for compra in self.historico_compras_geral:
             print(compra, end='\n\n')
             
     def exibir_historico_movimentacao_geral(self):
-        for movimentacao in self._historico_movimentacao_geral:
+        for movimentacao in self.historico_movimentacao_geral:
             print(movimentacao, end='\n\n')
             
     def exibir_gerentes(self):
-        for gerente in self._gerentes:
+        for gerente in self.gerentes:
             print(gerente, end='\n\n')
             
     def exibir_repositores(self):
-        for repositor in self._repositores:
+        for repositor in self.repositores:
             print(repositor, end='\n\n')
             
     def exibir_clientes(self):
-        for cliente in self._clientes:
+        for cliente in self.clientes:
             print(cliente, end='\n\n')
             
     def exibir_prateleiras(self):
-        for prateleira in self._prateleiras:
+        for prateleira in self.prateleiras:
             print(prateleira, end='\n\n')
             
     def exibir_estoques(self):
-        for estoque in self._estoque:
+        for estoque in self.estoques:
             print(estoque, end='\n\n')
             
     def exibir_produtos(self):
-        for produto in self._produtos:
+        for produto in self.produtos:
             print(produto, end='\n\n')
             
     
@@ -441,55 +458,55 @@ class SISTEMA:
         
     
     def adicionar_estoque(self, estoque:ESTOQUE):
-        estoque.ID = self.atribuir_id(self._estoque)
-        self._estoque.append(estoque)
+        estoque.ID = self.atribuir_id(self.estoques)
+        self.estoques.append(estoque)
         
     def adicionar_prateleira(self, prateleira:PRATELEIRA):
-        prateleira.ID = self.atribuir_id(self._prateleiras)
-        self._prateleiras.append(prateleira)
+        prateleira.ID = self.atribuir_id(self.prateleiras)
+        self.prateleiras.append(prateleira)
         
     def adicionar_cliente(self, cliente:CLIENTE):
-        cliente.ID = self.atribuir_id(self._clientes)
-        self._clientes.append(cliente)
+        cliente.ID = self.atribuir_id(self.clientes)
+        self.clientes.append(cliente)
         
     def adicionar_repositor(self, repositor:REPOSITOR):
-        repositor.ID = self.atribuir_id(self._repositores)
-        self._repositores.append(repositor)
+        repositor.ID = self.atribuir_id(self.repositores)
+        self.repositores.append(repositor)
         
     def adicionar_gerente(self, gerente:GERENTE):
-        gerente.ID = self.atribuir_id(self._gerentes)
-        self._gerentes.append(gerente)
+        gerente.ID = self.atribuir_id(self.gerentes)
+        self.gerentes.append(gerente)
         
     def adicionar_produto(self, produto:PRODUTO):
-        produto.ID = self.atribuir_id(self._produtos)
-        self._produtos.append(produto)
+        produto.ID = self.atribuir_id(self.produtos)
+        self.produtos.append(produto)
         
     def adicionar_venda(self, cliente:CLIENTE, sacola:SACOLA_DE_PRODUTOS):
-        self._historico_vendas_geral.append(f"Venda para {cliente}\n{sacola}")
+        self.historico_vendas_geral.append(f"Venda para {cliente}\n{sacola}")
     
     def adicionar_compra(self, gerente:GERENTE, produto:PRODUTO, quantidade:int):
-        self._historico_compras_geral.append(f"Compra de {quantidade} {produto} por {gerente.nome}")
+        self.historico_compras_geral.append(f"Compra de {quantidade} {produto} por {gerente.nome}")
     
     def adicionar_movimentacao_geral(self, fulano, local ,tipo:str, produto:PRODUTO, quantidade:int):
-        self._historico_movimentacao_geral.append(f"{tipo}: {quantidade}\n{str(produto)}\nEm: {local}\nPor: {fulano}")
+        self.historico_movimentacao_geral.append(f"{tipo}: {quantidade}\n{str(produto)}\nEm: {local}\nPor: {fulano}")
         
         
     def remover_gerente(self, gerente:GERENTE):
-        self._gerentes.remove(gerente)    
+        self.gerentes.remove(gerente)    
         
     def remover_estoque(self, estoque:ESTOQUE):
-        self._estoque.remove(estoque)
+        self.estoques.remove(estoque)
     
     def remover_prateleira(self, prateleira:PRATELEIRA):
-        self._prateleiras.remove(prateleira)
+        self.prateleiras.remove(prateleira)
     
     def remover_cliente(self, cliente:CLIENTE):
-        self._clientes.remove(cliente)
+        self.clientes.remove(cliente)
 
     def remover_repositor(self, repositor:REPOSITOR):
-        self._repositores.remove(repositor)
+        self.repositores.remove(repositor)
         
     def remover_produto(self, produto:PRODUTO):
-        self._produtos.remove(produto)
+        self.produtos.remove(produto)
 
     
