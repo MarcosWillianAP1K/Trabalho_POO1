@@ -41,8 +41,8 @@ def criar_clientes(sistema:clas.SISTEMA, nome:str):
     cliente = clas.CLIENTE(nome)
     sistema.adicionar_cliente(cliente)
 
-def criar_produtos(sistema:clas.SISTEMA, nome:str, preco:float, quantidade:int):
-    if nome == "" or preco <= 0 or quantidade <= 0:
+def criar_produtos(sistema:clas.SISTEMA, nome:str, preco:float, tipagem:str):
+    if nome == "" or preco <= 0:
         print("Nome, preco ou quantidade invalido")
         pausar_terminal()
         return None
@@ -52,10 +52,10 @@ def criar_produtos(sistema:clas.SISTEMA, nome:str, preco:float, quantidade:int):
         pausar_terminal()
         return None
     
-    produto = clas.PRODUTO(nome, preco, quantidade)
+    produto = clas.PRODUTO(nome, preco, tipagem)
     sistema.adicionar_produto(produto)
     
-    return [produto, quantidade]
+    return produto
     
 def criar_estoque(sistema:clas.SISTEMA, nome:str):
     if nome == "":
@@ -97,14 +97,54 @@ def digitar_preco():
     
     return preco
 
-def digitar_quantidade():
+def digitar_unidade():
     try:
         quantidade = int(input("Digite a quantidade: "))
     except:
         return 0
     
     return quantidade
+
+def digitar_peso():
+    try:
+        peso = float(input("Digite o peso: "))
+    except:
+        return 0
     
+    return peso
+
+def digitar_tipagem():
+    while(True):
+        
+        print("1 - Unidade")
+        print("2 - Peso")
+        
+        tipagem = input("Digite a tipagem: ")
+        
+        if tipagem == "1":
+            return "Unidade"
+        elif tipagem == "2":
+            return "Peso"
+        else:
+            print("Tipagem invalida")
+            pausar_terminal()
+            limpar_terminal()
+        
+def digitar_quantidade( produto:clas.PRODUTO, quantidade:float):
+    
+    limpar_terminal()
+    print(produto)
+    if quantidade > 0:
+        print("Quantidade atual: ", quantidade)
+    
+    if produto.tipo == "Unidade":
+        return digitar_unidade()
+    
+    if produto.tipo == "Peso":
+        return digitar_peso()
+
+    return None
+
 
 def selecionar_item(lista:list):
     while(True):
@@ -355,15 +395,25 @@ def exibir_conteudo_da_lista(lista:list):
 
 
 
-def retornar_pro_local_de_origem(sistema:clas.SISTEMA, produto:clas.PRODUTO, local):
+def retornar_pro_local_de_origem(sistema:clas.SISTEMA, produto:clas.PRODUTO, quantidade:float, local):
     
     if type(local) == clas.ESTOQUE:
-        local.adicionar_produto(produto, produto.quantidade)
+        local.adicionar_produto(produto, quantidade)
         return
     
     if type(local) == clas.PRATELEIRA:
-        local.adicionar_produto(produto, produto.quantidade)
+        local.adicionar_produto(produto, quantidade)
         return
+
+
+def voltar_todos_para_origem(sistema: clas.SISTEMA ,sacola:clas.SACOLA_DE_PRODUTOS):
+    
+   for pro, lista in sacola.produtos.items():
+       
+       retornar_pro_local_de_origem(sistema, pro, lista[0], lista[1])
+    
+    
+
 
 
 def iniciar_sistema():
@@ -373,7 +423,7 @@ def iniciar_sistema():
     criar_clientes(sistema, "cliente_inicial")
     criar_estoque(sistema, "estoque_inicial")
     criar_prateleira(sistema, "prateleira_inicial")
-    Produto = criar_produtos(sistema, "produto_inicial", 1.0, 1)
-    sistema.estoques[0].adicionar_produto(Produto[0], Produto[1])
+    Produto = criar_produtos(sistema, "produto_inicial", 1.0, "Unidade")
+    sistema.estoques[0].adicionar_produto(Produto, 10)
     
     return sistema

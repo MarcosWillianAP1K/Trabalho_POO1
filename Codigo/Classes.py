@@ -68,7 +68,7 @@ class HISTORICO(abc.ABC):
         return iter(self._historico)  # Torna o histórico iterável
     
     def __str__(self):
-        return "\n".join(self._historico)
+        return "\n\n".join(self._historico)
 
 
 class HISTORICO_MOVIMENTACAO(HISTORICO):
@@ -103,7 +103,7 @@ class PRATELEIRA(IDENTIFICADOR):
         return self._produtos
         
         
-    def adicionar_produto(self, produto:PRODUTO, quantidade:int):
+    def adicionar_produto(self, produto:PRODUTO, quantidade:float):
         
         if produto not in self._produtos:
             self._produtos[produto] = quantidade
@@ -111,7 +111,7 @@ class PRATELEIRA(IDENTIFICADOR):
             self._produtos[produto] += quantidade
         
         
-    def retirar_produto(self, produto:PRODUTO, quantidade:int):
+    def retirar_produto(self, produto:PRODUTO, quantidade:float):
         
         if produto in self._produtos:
             if quantidade > 0 and quantidade <= self._produtos[produto]:
@@ -152,7 +152,7 @@ class SACOLA_DE_PRODUTOS:
         return self._preco_total
     
     
-    def adicionar_produto(self, produto:PRODUTO, quantidade:int, local_origem):
+    def adicionar_produto(self, produto:PRODUTO, quantidade:float, local_origem):
         if produto in self._produtos:
             self._produtos[produto][0] += quantidade
         else:
@@ -160,7 +160,7 @@ class SACOLA_DE_PRODUTOS:
         
         self._preco_total += produto.preco * quantidade
     
-    def remover_produto(self, produto:PRODUTO, quantidade:int):
+    def remover_produto(self, produto:PRODUTO, quantidade:float):
         if produto in self._produtos:
             if quantidade > 0 and quantidade <= self._produtos[produto][0]:
                 self._produtos[produto][0] -= quantidade
@@ -175,8 +175,8 @@ class SACOLA_DE_PRODUTOS:
         self._preco_total = 0.0
         
     def __str__(self):
-        produtos_str = "\n".join(f'{pro.nome}: {quantidade}' for pro, quantidade in self._produtos.items())
-        return f'Sacola:\n{produtos_str}\nPreço total: R${self._preco_total}\n'
+        produtos_str = "\n\n".join(f'{pro}\nQuantidade: {quantidade[0]}' for pro, quantidade in self._produtos.items())
+        return f'Sacola:\n{produtos_str}\n\nPreço total: R${self._preco_total}\n\n'
     
 
 class CLIENTE(IDENTIFICADOR):
@@ -285,7 +285,7 @@ class ESTOQUE(IDENTIFICADOR):
     def historico_movimentacao_estoque(self):
         return self._historico_movimentacao_estoque
         
-    def adicionar_produto(self, produto:PRODUTO, quantidade:int):
+    def adicionar_produto(self, produto:PRODUTO, quantidade:float):
         
         if produto not in self._estoque:
             self._estoque[produto] = quantidade
@@ -295,7 +295,7 @@ class ESTOQUE(IDENTIFICADOR):
         
         self._historico_movimentacao_estoque.adicionar_item(f'Adicionou {quantidade} produto', produto)
         
-    def pegar_produto(self, produto:PRODUTO, quantidade:int):
+    def pegar_produto(self, produto:PRODUTO, quantidade:float):
         
         if produto in self._estoque:
             if quantidade > 0 and quantidade <= self._estoque[produto]:

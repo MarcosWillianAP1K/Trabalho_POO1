@@ -2,7 +2,60 @@ import Funcoes_sistema as f
 
 
 def menu_sacola(Sistema_principal: f.clas.SISTEMA, sacola: f.clas.SACOLA_DE_PRODUTOS):
-    pass
+    
+    if sacola == None or sacola.produtos == {}:
+        print("Nenhum produto na sacola")
+        f.pausar_terminal()
+        return
+    
+    while(True):
+        
+        if sacola.produtos == {}:
+            break
+        
+        f.limpar_terminal()
+        
+        print("Bem vindo a sacola")
+        print("Selecione uma opcao:")
+        print("1 - remover produto")
+        print("2 - esvaziar sacola")
+        print("3 - ver produtos")
+        print("0 - Voltar")
+        
+        opcao = str(input("Digite a opcao desejada: "))
+        
+        f.limpar_terminal()
+        
+        if opcao == "1":
+            produto = f.verificar_sacola(sacola)
+            
+            if produto != None:
+                
+                quantidade = f.digitar_quantidade(produto[0], produto[1][0])
+                
+                if quantidade != None and quantidade > 0:
+                    sacola.remover_produto(produto[0], quantidade)
+                    f.retornar_pro_local_de_origem(Sistema_principal, produto[0], quantidade, produto[1][1])
+                
+        
+        elif opcao == "2":
+            if sacola.produtos != {}:
+                f.voltar_todos_para_origem(Sistema_principal, sacola)
+                sacola.limpar_sacola()
+                
+                
+        elif opcao == "3":
+            print(sacola)
+            f.pausar_terminal()
+            
+        elif opcao == "0":
+            break
+        
+        else:
+            print("Opcao invalida")
+            f.pausar_terminal()
+       
+
 
 
 def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
@@ -47,6 +100,11 @@ def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
 
 def menu_prateleira_repositor(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR, prateleira:f.clas.PRATELEIRA):
     
+    if prateleira == None:
+        print("Nenhuma prateleira cadastrada")
+        f.pausar_terminal()
+        return
+    
     while(True):
         f.limpar_terminal()
         
@@ -65,19 +123,27 @@ def menu_prateleira_repositor(Sistema_principal: f.clas.SISTEMA, repositor:f.cla
             produto = f.verificar_sacola(repositor.sacola)
             
             if produto != None:
-                prateleira.adicionar_produto(produto[0], produto[1][0])
-                repositor.sacola.remover_produto(produto[0], produto[1][0])
-                repositor.adicionar_historico_movimentacao_pessoal("Adicionou", produto[0], produto[1][0], prateleira)
-                Sistema_principal.adicionar_movimentacao_geral(str(repositor), prateleira ,"Adicionou",produto[0], produto[1][0])
+                quantidade = f.digitar_quantidade(produto[0], produto[1][0])
+                
+                if quantidade != None and quantidade > 0:
+                
+                    prateleira.adicionar_produto(produto[0], quantidade)
+                    repositor.sacola.remover_produto(produto[0], quantidade)
+                    repositor.adicionar_historico_movimentacao_pessoal("Adicionou", produto[0], quantidade, prateleira)
+                    Sistema_principal.adicionar_movimentacao_geral(str(repositor), prateleira ,"Adicionou",produto[0], quantidade)
         
         elif opcao == "2":
             produto = f.verificar_produto_prateleira(prateleira)
             
             if produto != None:
-                repositor.sacola.adicionar_produto(produto[0], produto[1], prateleira) 
-                prateleira.pegar_produto(produto[0], produto[1])
-                repositor.adicionar_historico_movimentacao_pessoal("Retirou", produto[0], produto[1], prateleira)
-                Sistema_principal.adicionar_movimentacao_geral(str(repositor), prateleira ,"Retirou",produto[0], produto[1])
+                quantidade = f.digitar_quantidade(produto[0], produto[1][0])
+                
+                if quantidade != None and quantidade > 0:
+                
+                    repositor.sacola.adicionar_produto(produto[0], quantidade, prateleira)
+                    prateleira.pegar_produto(produto[0], quantidade)
+                    repositor.adicionar_historico_movimentacao_pessoal("Retirou", produto[0], quantidade, prateleira)
+                    Sistema_principal.adicionar_movimentacao_geral(str(repositor), prateleira ,"Retirou",produto[0], quantidade)
         
         elif opcao == "3":
             prateleira.exibir_produtos()
@@ -91,6 +157,11 @@ def menu_prateleira_repositor(Sistema_principal: f.clas.SISTEMA, repositor:f.cla
     
     
 def menu_estoque(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR ,estoque:f.clas.ESTOQUE):
+    
+    if  estoque == None:
+        print("Nenhum estoque cadastrado")
+        f.pausar_terminal()
+        return
     
     while(True):
         f.limpar_terminal()
@@ -111,19 +182,25 @@ def menu_estoque(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR ,
             produto = f.verificar_sacola(repositor.sacola)
             
             if produto != None:
-                estoque.adicionar_produto(produto[0], produto[1][0])
-                repositor.sacola.remover_produto(produto[0], produto[1][0])
-                repositor.adicionar_historico_movimentacao_pessoal("Adicionou", produto[0], produto[1][0], estoque)
-                Sistema_principal.adicionar_movimentacao_geral(str(repositor), estoque ,"Adicionou",produto[0], produto[1][0])
+                quantidade = f.digitar_quantidade(produto[0], produto[1])
+                
+                if quantidade != None and quantidade > 0:
+                    estoque.adicionar_produto(produto[0], quantidade)
+                    repositor.sacola.remover_produto(produto[0], quantidade)
+                    repositor.adicionar_historico_movimentacao_pessoal("Adicionou", produto[0], quantidade, estoque)
+                    Sistema_principal.adicionar_movimentacao_geral(str(repositor), estoque ,"Adicionou",produto[0], quantidade)
         
         elif opcao == "2":
             produto = f.verificar_produto_estoque(estoque)
             
             if produto != None:
-                repositor.sacola.adicionar_produto(produto[0], produto[1], estoque)
-                estoque.pegar_produto(produto[0], produto[1])
-                repositor.adicionar_historico_movimentacao_pessoal("Retirou", produto[0], produto[1], estoque)
-                Sistema_principal.adicionar_movimentacao_geral(str(repositor), estoque ,"Retirou",produto[0], produto[1])
+                quantidade = f.digitar_quantidade(produto[0], produto[1])
+                
+                if quantidade != None and quantidade > 0:
+                    repositor.sacola.adicionar_produto(produto[0], quantidade, estoque)
+                    estoque.pegar_produto(produto[0], quantidade)
+                    repositor.adicionar_historico_movimentacao_pessoal("Retirou", produto[0], quantidade, estoque)
+                    Sistema_principal.adicionar_movimentacao_geral(str(repositor), estoque ,"Retirou",produto[0], quantidade)
             
         elif opcao == "3":
             estoque.exibir_produtos_estoque()
@@ -230,15 +307,26 @@ def menu_gerente(Sistema_principal: f.clas.SISTEMA, gerente:f.clas.GERENTE):
             f.criar_clientes(Sistema_principal, f.digitar_nome())
             
         elif opcao == "4":
-            produto = f.criar_produtos(Sistema_principal, f.digitar_nome(), f.digitar_preco(), f.digitar_quantidade())
+            Estoque = f.verificar_estoque(Sistema_principal)
             
-            if produto != None:
-                estoque = f.verificar_estoque(Sistema_principal)
+            if Estoque != None:
                 
-                if estoque != None:
-                    estoque.adicionar_produto(produto[0], produto[1])
-                else:
-                    Sistema_principal.remover_produto(produto[0])
+                produto = f.criar_produtos(Sistema_principal, f.digitar_nome(), f.digitar_preco(), f.digitar_tipagem())
+                
+                if produto != None:
+                    quantidade = f.digitar_quantidade(produto, 0)
+                    if quantidade != None and quantidade > 0:
+                        Estoque.adicionar_produto(produto, quantidade)
+                        Sistema_principal.adicionar_movimentacao_geral(str(gerente), Estoque ,"Adicionou",produto, quantidade)
+                        Sistema_principal.adicionar_compra(gerente ,produto, quantidade)
+
+                    else:
+                        print("Quantidade invalida")
+                        Sistema_principal.remover_produto(produto)
+                        f.pausar_terminal()
+                   
+            
+            
             
         elif opcao == "5":
             f.criar_estoque(Sistema_principal, f.digitar_nome())
