@@ -58,6 +58,7 @@ def menu_sacola(Sistema_principal: f.clas.SISTEMA, sacola: f.clas.SACOLA_DE_PROD
 
 
 
+
 def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
     
     if cliente == None or Sistema_principal == None:
@@ -69,12 +70,15 @@ def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
         f.limpar_terminal()
         
         print(f"Bem vindo cliente {cliente.nome}")
+        print("Saldo: R$", cliente.saldo)
         print("Selecione uma opcao:")
-        print("1 - Ver produtos")
-        print("2 - Ver carrinho")
+        print("1 - Ver prateleiras")
+        print("2 - Ver sacola")
         print("3 - Finalizar compra")
-        print("4 - Ver historico de compras")
-        print("5 - Ver historico de transacoes")
+        print("4 - Adicionar saldo")
+        print("5 - Remover saldo")
+        print("6 - Ver historico de compras")
+        print("7 - Ver historico de transacoes")
         print("0 - Voltar")
         
         opcao = str(input("Digite a opcao desejada: "))
@@ -82,15 +86,33 @@ def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
         f.limpar_terminal()
         
         if opcao == "1":
-            pass
+            prateleira = f.verificar_prateleira(Sistema_principal)
+            
+            if prateleira != None:
+                produto = f.verificar_produto_prateleira(prateleira)
+            
+                if produto != None:
+                    quantidade = f.digitar_quantidade(produto[0], produto[1])
+                    
+                    if quantidade != None and quantidade > 0:
+                        cliente.sacola.adicionar_produto(produto[0], quantidade, prateleira)
+                        prateleira.retirar_produto(produto[0], quantidade)
+                        Sistema_principal.adicionar_movimentacao_geral(str(cliente), prateleira ,"Adicionou",produto[0], quantidade)
         elif opcao == "2":
-            pass
+            menu_sacola(Sistema_principal, cliente.sacola)
+            
         elif opcao == "3":
-            pass
+            f.finalizar_compra(Sistema_principal, cliente)
         elif opcao == "4":
-            pass
+            cliente.adicionar_saldo(f.digitar_saldo())
         elif opcao == "5":
-            pass
+            cliente.remover_saldo(f.digitar_saldo())
+        elif opcao == "6":
+            print(cliente.historico_compras)
+            f.pausar_terminal()
+        elif opcao == "7":
+            print(cliente.historico_transacoes.historico)
+            f.pausar_terminal()
         elif opcao == "0":
             break
         else:
@@ -182,7 +204,7 @@ def menu_estoque(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR ,
             produto = f.verificar_sacola(repositor.sacola)
             
             if produto != None:
-                quantidade = f.digitar_quantidade(produto[0], produto[1])
+                quantidade = f.digitar_quantidade(produto[0], produto[1][0])
                 
                 if quantidade != None and quantidade > 0:
                     estoque.adicionar_produto(produto[0], quantidade)

@@ -11,7 +11,7 @@ def pausar_terminal():
     
     import os
     
-    os.system('pause' if os.name == 'nt' else 'read -p "Pressione enter para continuar"')
+    os.system('pause' if os.name == 'nt' else 'read -p "Pressione qualquer tecla para continuar..."')
 
 
 def criar_gerente(sistema:clas.SISTEMA ,nome:str, salario:float):
@@ -75,6 +75,8 @@ def criar_prateleira(sistema:clas.SISTEMA, nome:str):
     
     prateleira = clas.PRATELEIRA(nome)
     sistema.adicionar_prateleira(prateleira)
+    
+    return prateleira
     
     
 def digitar_nome():    
@@ -145,6 +147,13 @@ def digitar_quantidade( produto:clas.PRODUTO, quantidade:float):
 
     return None
 
+def digitar_saldo():
+    try:
+        saldo = float(input("Digite o saldo: "))
+    except:
+        return 0
+    
+    return saldo
 
 def selecionar_item(lista:list):
     while(True):
@@ -191,7 +200,41 @@ def selecionar_produto(produtos:dict):
         return "nao encontrado"
     
 
-
+def finalizar_compra(sistema:clas.SISTEMA, cliente:clas.CLIENTE):
+    
+    if len(cliente.sacola.produtos) == 0:
+        print("Nenhum produto na sacola")
+        pausar_terminal()
+        return
+    
+    
+    while(True):
+        limpar_terminal()
+        
+        print(cliente.sacola)
+    
+        print("Deseja finalizar a compra? (1 - Sim, 2 - Nao)")
+        
+        opcao = input("Digite a opcao: ")
+        
+        if opcao == "1":
+            break
+        
+        if opcao == "2":
+            return
+        
+        print("Opcao invalida")
+        pausar_terminal()
+    
+    if cliente.saldo >= cliente.sacola.preco_total:
+        sistema.adicionar_venda(cliente, cliente.sacola)
+        cliente.finalizar_compra()
+    
+        print("Compra finalizada")
+        pausar_terminal()
+    else:
+        print("Saldo insuficiente")
+        pausar_terminal()
     
     
 def verificar_estoque(sistema:clas.SISTEMA):
@@ -422,8 +465,9 @@ def iniciar_sistema():
     criar_repositores(sistema, "repositor_inicial", 1500)
     criar_clientes(sistema, "cliente_inicial")
     criar_estoque(sistema, "estoque_inicial")
-    criar_prateleira(sistema, "prateleira_inicial")
+    prateleira = criar_prateleira(sistema, "prateleira_inicial")
     Produto = criar_produtos(sistema, "produto_inicial", 1.0, "Unidade")
+    prateleira.adicionar_produto(Produto, 10)
     sistema.estoques[0].adicionar_produto(Produto, 10)
     
     return sistema

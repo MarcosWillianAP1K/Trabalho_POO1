@@ -1,6 +1,7 @@
 import abc
 import random
 
+
 class IDENTIFICADOR(abc.ABC):
     
     def __init__(self, nome:str):
@@ -48,7 +49,7 @@ class PRODUTO(IDENTIFICADOR):
         self._tipo = tipo
         
     def __str__(self):
-        return f'ID: {self._id}\nProduto: {self.nome}\nPreço: {self._preco}\nTipo: {self._tipo}'
+        return f'ID: {self.ID:03}\nProduto: {self.nome}\nPreço: {self.preco}\nTipo: {self.tipo}'
 
 
 class HISTORICO(abc.ABC):
@@ -117,7 +118,7 @@ class PRATELEIRA(IDENTIFICADOR):
             if quantidade > 0 and quantidade <= self._produtos[produto]:
                 self._produtos[produto] -= quantidade
                 
-            if self._produtos[produto][0] == 0:
+            if self._produtos[produto] == 0:
                 self._produtos.pop(produto)
             
     def remover_todos_produto(self, produto:PRODUTO):
@@ -186,12 +187,16 @@ class CLIENTE(IDENTIFICADOR):
         self._historico_compras = []
         self._saldo = 0.0
         self._historico_transacoes = HISTORICO_TRANSACOES()
-        self.sacola = SACOLA_DE_PRODUTOS()
+        self._sacola = SACOLA_DE_PRODUTOS()
         
     
     @property
     def saldo(self):
         return self._saldo
+    
+    @property
+    def sacola(self):
+        return self._sacola
     
     @property
     def historico_compras(self):
@@ -200,6 +205,12 @@ class CLIENTE(IDENTIFICADOR):
     @property
     def historico_transacoes(self):
         return self._historico_transacoes
+    
+    def finalizar_compra(self):
+        if self._sacola.preco_total <= self._saldo:
+            self._historico_compras.append(self.sacola)
+            self._saldo -= self.sacola.preco_total
+            self._sacola.limpar_sacola()
         
     def adicionar_saldo(self, valor:float):
         
@@ -215,7 +226,7 @@ class CLIENTE(IDENTIFICADOR):
     
 
     def __str__(self):
-        return f'Cliente: {self.nome}\nID: {self._id}\nSaldo: {self._saldo}'
+        return f'Cliente: {self.nome}\nID: {self.ID}\nSaldo: {self.saldo}'
 
 
 class FUNCIONARIO(IDENTIFICADOR):
