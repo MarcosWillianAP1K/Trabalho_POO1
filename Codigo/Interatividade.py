@@ -1,6 +1,8 @@
 import Funcoes_sistema as f
 
 
+def menu_sacola(Sistema_principal: f.clas.SISTEMA, sacola: f.clas.SACOLA_DE_PRODUTOS):
+    pass
 
 
 def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
@@ -43,6 +45,99 @@ def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
             f.pausar_terminal()
 
 
+def menu_prateleira_repositor(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR, prateleira:f.clas.PRATELEIRA):
+    
+    while(True):
+        f.limpar_terminal()
+        
+        print(f"Bem vindo a prateleira {prateleira.nome}")
+        print("Selecione uma opcao:")
+        print("1 - Adicionar na prateleira")
+        print("2 - pegar na prateleira")
+        print("3 - Ver produtos")
+        print("0 - Voltar")
+        
+        opcao = str(input("Digite a opcao desejada: "))
+        
+        f.limpar_terminal()
+        
+        if opcao == "1":
+            produto = f.verificar_sacola(repositor.sacola)
+            
+            if produto != None:
+                prateleira.adicionar_produto(produto[0], produto[1][0])
+                repositor.sacola.remover_produto(produto[0], produto[1][0])
+                repositor.adicionar_historico_movimentacao_pessoal("Adicionou", produto[0], produto[1][0], prateleira)
+                Sistema_principal.adicionar_movimentacao_geral(str(repositor), prateleira ,"Adicionou",produto[0], produto[1][0])
+        
+        elif opcao == "2":
+            produto = f.verificar_produto_prateleira(prateleira)
+            
+            if produto != None:
+                repositor.sacola.adicionar_produto(produto[0], produto[1], prateleira) 
+                prateleira.pegar_produto(produto[0], produto[1])
+                repositor.adicionar_historico_movimentacao_pessoal("Retirou", produto[0], produto[1], prateleira)
+                Sistema_principal.adicionar_movimentacao_geral(str(repositor), prateleira ,"Retirou",produto[0], produto[1])
+        
+        elif opcao == "3":
+            prateleira.exibir_produtos()
+            f.pausar_terminal()
+            
+        elif opcao == "0":
+            break
+        else:
+            print("Opcao invalida")
+            f.pausar_terminal()
+    
+    
+def menu_estoque(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR ,estoque:f.clas.ESTOQUE):
+    
+    while(True):
+        f.limpar_terminal()
+        
+        print(f"Bem vindo ao estoque {estoque.nome}")
+        print("Selecione uma opcao:")
+        print("1 - Adicionar no estoque")
+        print("2 - pegar no estoque produto")
+        print("3 - Ver produtos")
+        print("4 - Ver historico de movimentacao")
+        print("0 - Voltar")
+        
+        opcao = str(input("Digite a opcao desejada: "))
+        
+        f.limpar_terminal()
+        
+        if opcao == "1":
+            produto = f.verificar_sacola(repositor.sacola)
+            
+            if produto != None:
+                estoque.adicionar_produto(produto[0], produto[1][0])
+                repositor.sacola.remover_produto(produto[0], produto[1][0])
+                repositor.adicionar_historico_movimentacao_pessoal("Adicionou", produto[0], produto[1][0], estoque)
+                Sistema_principal.adicionar_movimentacao_geral(str(repositor), estoque ,"Adicionou",produto[0], produto[1][0])
+        
+        elif opcao == "2":
+            produto = f.verificar_produto_estoque(estoque)
+            
+            if produto != None:
+                repositor.sacola.adicionar_produto(produto[0], produto[1], estoque)
+                estoque.pegar_produto(produto[0], produto[1])
+                repositor.adicionar_historico_movimentacao_pessoal("Retirou", produto[0], produto[1], estoque)
+                Sistema_principal.adicionar_movimentacao_geral(str(repositor), estoque ,"Retirou",produto[0], produto[1])
+            
+        elif opcao == "3":
+            estoque.exibir_produtos_estoque()
+            f.pausar_terminal()
+            
+        elif opcao == "4":
+            print(estoque.historico_movimentacao_estoque)
+            f.pausar_terminal()
+        elif opcao == "0":
+            break
+        else:
+            print("Opcao invalida")
+            f.pausar_terminal()
+
 
 def menu_repositor(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR):
     
@@ -67,9 +162,24 @@ def menu_repositor(Sistema_principal: f.clas.SISTEMA, repositor:f.clas.REPOSITOR
         f.limpar_terminal()
         
         if opcao == "1":
-            pass
+            estoque = f.verificar_estoque(Sistema_principal)
+            
+            if estoque != None:
+                menu_estoque(Sistema_principal, repositor,estoque)
+        
         elif opcao == "2":
-            pass
+            prateleira = f.verificar_prateleira(Sistema_principal)
+            
+            if prateleira != None:
+                menu_prateleira_repositor(Sistema_principal, repositor, prateleira)
+        
+        elif opcao == "3":
+            menu_sacola(Sistema_principal, repositor.sacola)
+            
+        elif opcao == "4":
+            print(repositor.historico_movimentacao_pessoal)
+            f.pausar_terminal()
+        
         elif opcao == "0":
             break
         else:
@@ -190,7 +300,6 @@ def menu_gerente(Sistema_principal: f.clas.SISTEMA, gerente:f.clas.GERENTE):
         else:
             print("Opcao invalida")
             f.pausar_terminal()
-
 
 
 

@@ -117,7 +117,7 @@ class PRATELEIRA(IDENTIFICADOR):
             if quantidade > 0 and quantidade <= self._produtos[produto]:
                 self._produtos[produto] -= quantidade
                 
-            if self._produtos[produto] == 0:
+            if self._produtos[produto][0] == 0:
                 self._produtos.pop(produto)
             
     def remover_todos_produto(self, produto:PRODUTO):
@@ -158,16 +158,17 @@ class SACOLA_DE_PRODUTOS:
         else:
             self._produtos[produto] = [quantidade, local_origem]
         
-        self._preco_total += produto.preco * self._produtos[produto]
+        self._preco_total += produto.preco * quantidade
     
     def remover_produto(self, produto:PRODUTO, quantidade:int):
         if produto in self._produtos:
-            if quantidade > 0 and quantidade <= self._produtos[produto]:
+            if quantidade > 0 and quantidade <= self._produtos[produto][0]:
                 self._produtos[produto][0] -= quantidade
                 self._preco_total -= produto.preco * quantidade
                 
-            if self._produtos[produto] == 0:
+            if self._produtos[produto][0] == 0:
                 self._produtos.pop(produto)
+        
     
     def limpar_sacola(self):
         self._produtos.clear()
@@ -253,13 +254,9 @@ class REPOSITOR(FUNCIONARIO):
         return self._sacola
     
     
-    def adicionar_produto_prateleira(self, prateleira:PRATELEIRA, produto:PRODUTO, quantidade:int):
-        prateleira.adicionar_produto(produto, quantidade)
-        self._historico_movimentacao_pessoal.adicionar_item(f'Adicionou {quantidade} produto.\nNa {str(prateleira)}', produto)
-        
-    def retirar_produto_prateleira(self, prateleira:PRATELEIRA, produto:PRODUTO, quantidade:int):
-        prateleira.retirar_produto(produto, quantidade)
-        self._historico_movimentacao_pessoal.adicionar_item(f'Retirou {quantidade} produto.\nNa {str(prateleira)}', produto)
+    def adicionar_historico_movimentacao_pessoal(self, tipo:str, produto:PRODUTO, quantidade:int, local):
+        self._historico_movimentacao_pessoal.adicionar_item(f'{tipo}: {quantidade}\nEm: {str(local)}', produto)
+    
         
     
     def __str__(self):
@@ -462,8 +459,8 @@ class SISTEMA:
     def adicionar_compra(self, gerente:GERENTE, produto:PRODUTO, quantidade:int):
         self._historico_compras_geral.append(f"Compra de {quantidade} {produto} por {gerente.nome}")
     
-    def adicionar_movimentacao_geral(self, fulano ,tipo:str, produto:PRODUTO):
-        self._historico_movimentacao_geral.append(f"{tipo}:\n{str(produto)}\nPor: {fulano}")
+    def adicionar_movimentacao_geral(self, fulano, local ,tipo:str, produto:PRODUTO, quantidade:int):
+        self._historico_movimentacao_geral.append(f"{tipo}: {quantidade}\n{str(produto)}\nEm: {local}\nPor: {fulano}")
         
         
     def remover_gerente(self, gerente:GERENTE):

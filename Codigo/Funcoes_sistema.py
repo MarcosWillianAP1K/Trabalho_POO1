@@ -112,7 +112,12 @@ def selecionar_item(lista:list):
             print(e)
             print()
             
-        id = input("Digite o ID do item que deseja selecionar (ou 0 para sair): ") 
+        while(True):
+            try:
+                id = int(input("Digite o ID do item que deseja selecionar (ou 0 para sair): "))
+                break
+            except:
+                print("ID invalido")
         
         if id == "0":
             return None
@@ -123,6 +128,30 @@ def selecionar_item(lista:list):
                 return e
             
         return "nao encontrado"
+
+def selecionar_produto(produtos:dict):
+    
+     while(True):
+        
+        while(True):
+            try:    
+                id = int(input("Digite o ID do item que deseja selecionar (ou 0 para sair): ") )
+                break
+            except:
+                print("ID invalido")
+                
+        if id == "0":
+            return None
+        
+        for e in produtos:
+            if e.ID == id:
+                return [e, produtos[e]]
+            
+            
+        return "nao encontrado"
+    
+
+
     
     
 def verificar_estoque(sistema:clas.SISTEMA):
@@ -233,7 +262,75 @@ def verificar_repositor(sistema:clas.SISTEMA):
             return Resultado
             
         print("Repositor nao encontrado")
+
+
+def verificar_sacola(sacola : clas.SACOLA_DE_PRODUTOS):
+    
+    if len(sacola.produtos) == 0:
+        print("Nenhum produto na sacola")
+        pausar_terminal()
+        return None
+    
+    if len(sacola.produtos) == 1:
+        return [list(sacola.produtos.keys())[0], list(sacola.produtos.values())[0]]
+    
+    while(True):
         
+        print(sacola)
+        
+        Resultado = selecionar_item(sacola.produtos)
+        
+        if Resultado != "nao encontrado":
+            return Resultado
+            
+        print("Produto nao encontrado na sacola")
+        
+    
+def verificar_produto_estoque(estoque:clas.ESTOQUE):
+    
+    if len(estoque.estoque) == 0:
+        print("Nenhum produto no estoque")
+        pausar_terminal()
+        return None
+    
+    if len(estoque.estoque) == 1:
+        return [list(estoque.estoque.keys())[0], list(estoque.estoque.values())[0]]
+    
+    while(True):
+        
+        estoque.exibir_produtos_estoque()
+        
+        Resultado = selecionar_produto(estoque.estoque)
+        
+        if Resultado != "nao encontrado":
+            return Resultado
+            
+        print("Produto nao encontrado no estoque")
+        pausar_terminal()
+
+
+def verificar_produto_prateleira(prateleira:clas.PRATELEIRA):
+    
+    if len(prateleira.produtos) == 0:
+        print("Nenhum produto na prateleira")
+        pausar_terminal()
+        return None
+    
+    if len(prateleira.produtos) == 1:
+        return [list(prateleira.produtos.keys())[0], list(prateleira.produtos.values())[0]]
+    
+    while(True):
+        
+        prateleira.exibir_produtos()
+        
+        Resultado = selecionar_produto(prateleira.produtos)
+        
+        if Resultado != "nao encontrado":
+            return Resultado
+            
+        print("Produto nao encontrado na prateleira")
+        pausar_terminal()
+
         
 def verificar_historico_movimentacao_geral(sistema:clas.SISTEMA):
     
