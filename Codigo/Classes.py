@@ -73,7 +73,10 @@ class HISTORICO(abc.ABC):
         return iter(self.historico)  # Torna o histórico iterável
     
     def __str__(self):
-        return "\n\n".join(item for item in self.historico)
+        if len(self.historico) == 0:
+            return 'Nenhum item registrado'
+        
+        return "\n\n".join(str(item) for item in self.historico)
 
 
 class HISTORICO_MOVIMENTACAO(HISTORICO):
@@ -88,11 +91,8 @@ class HISTORICO_TRANSACOES(HISTORICO):
     def adicionar_item(self, tipo:str, valor:float):
         self.historico.append(f'{tipo}: R${valor}')
         
+    
         
-class HISTORICO_COMPRAS(HISTORICO):
-        
-    def adicionar_item(self, produto:PRODUTO, quantidade:int):
-        self.historico.append(f'ID: {produto.ID}\nProduto: {produto.nome}\nQuantidade: {quantidade}\nValor: R${produto._preco * quantidade}\n')
         
     
         
@@ -189,13 +189,17 @@ class SACOLA_DE_PRODUTOS:
     def __str__(self):
         produtos_str = "\n\n".join(f'{pro}\nQuantidade: {quantidade[0]}' for pro, quantidade in self._produtos.items())
         return f'Sacola:\n{produtos_str}\n\nPreço total: R${self._preco_total}\n\n'
-    
+
+class HISTORICO_COMPRAS(HISTORICO):
+        
+    def adicionar_item(self, sacola:SACOLA_DE_PRODUTOS):
+        self.historico.append(f"Compra: \n{str(sacola)}\n\n")
 
 class CLIENTE(IDENTIFICADOR):
     
     def __init__(self, nome):
         super().__init__(nome)
-        self._historico_compras = []
+        self._historico_compras = HISTORICO_COMPRAS()
         self._saldo = 0.0
         self._historico_transacoes = HISTORICO_TRANSACOES()
         self._sacola = SACOLA_DE_PRODUTOS()
@@ -226,7 +230,7 @@ class CLIENTE(IDENTIFICADOR):
     
     def finalizar_compra(self):
         if self.sacola.preco_total <= self._saldo:
-            self.historico_compras.append(str(self.sacola))
+            self.historico_compras.adicionar_item(self.sacola)
             self.saldo = (self.saldo - self.sacola.preco_total)
             self.sacola.limpar_sacola()
         
@@ -335,6 +339,9 @@ class ESTOQUE(IDENTIFICADOR):
                 
     
     def exibir_produtos_estoque(self):
+        if len(self.estoque) == 0:
+            print('Estoque vazio')
+        
         for produto, quantidade in self.estoque.items():
             print(f'{produto}\nQuantidade: {quantidade}\n')
         
@@ -401,38 +408,65 @@ class SISTEMA:
     
     
     def exibir_historico_vendas_geral(self):
+        if len(self._historico_vendas_geral) == 0:
+            print('Nenhuma venda registrada')
+        
         for venda in self._historico_vendas_geral:
             print(venda, end='\n\n')
             
     def exibir_historico_compras_geral(self):
+        if len(self.historico_compras_geral) == 0:
+            print('Nenhuma compra registrada')
+        
         for compra in self.historico_compras_geral:
             print(compra, end='\n\n')
             
     def exibir_historico_movimentacao_geral(self):
+        if len(self.historico_movimentacao_geral) == 0:
+            print('Nenhuma movimentação registrada')
+        
         for movimentacao in self.historico_movimentacao_geral:
             print(movimentacao, end='\n\n')
             
     def exibir_gerentes(self):
+        if len(self.gerentes) == 0:
+            print('Nenhum gerente registrado')
+        
         for gerente in self.gerentes:
             print(gerente, end='\n\n')
             
     def exibir_repositores(self):
+        if len(self.repositores) == 0:
+            print('Nenhum repositor registrado')
+        
         for repositor in self.repositores:
             print(repositor, end='\n\n')
             
     def exibir_clientes(self):
+        if len(self.clientes) == 0:
+            print('Nenhum cliente registrado')
+        
         for cliente in self.clientes:
             print(cliente, end='\n\n')
             
     def exibir_prateleiras(self):
+        if len(self.prateleiras) == 0:
+            print('Nenhuma prateleira registrada')
+        
         for prateleira in self.prateleiras:
             print(prateleira, end='\n\n')
             
     def exibir_estoques(self):
+        if len(self.estoques) == 0:
+            print('Nenhum estoque registrado')
+        
         for estoque in self.estoques:
             print(estoque, end='\n\n')
             
     def exibir_produtos(self):
+        if len(self.produtos) == 0:
+            print('Nenhum produto registrado')
+        
         for produto in self.produtos:
             print(produto, end='\n\n')
             
@@ -485,7 +519,7 @@ class SISTEMA:
         self.historico_vendas_geral.append(f"Venda para {cliente}\n{sacola}")
     
     def adicionar_compra(self, gerente:GERENTE, produto:PRODUTO, quantidade:int):
-        self.historico_compras_geral.append(f"Compra de {quantidade} {produto} por {gerente.nome}")
+        self.historico_compras_geral.append(f"Compra de {quantidade}\n{produto} por {gerente.nome}")
     
     def adicionar_movimentacao_geral(self, fulano, local ,tipo:str, produto:PRODUTO, quantidade:int):
         self.historico_movimentacao_geral.append(f"{tipo}: {quantidade}\n{str(produto)}\nEm: {local}\nPor: {fulano}")

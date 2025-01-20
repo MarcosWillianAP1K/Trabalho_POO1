@@ -156,17 +156,17 @@ def digitar_saldo():
     return saldo
 
 def selecionar_item(lista:list):
-    while(True):
-        for e in lista:
-            print(e)
-            print()
+    while(True): 
             
         while(True):
             try:
                 id = int(input("Digite o ID do item que deseja selecionar (ou 0 para sair): "))
+               
                 break
             except:
                 print("ID invalido")
+
+        limpar_terminal()
         
         if id == "0":
             return None
@@ -185,11 +185,14 @@ def selecionar_produto(produtos:dict):
         while(True):
             try:    
                 id = int(input("Digite o ID do item que deseja selecionar (ou 0 para sair): ") )
+                
                 break
             except:
                 print("ID invalido")
-                
-        if id == "0":
+    
+        limpar_terminal()
+                    
+        if id == 0:
             return None
         
         for e in produtos:
@@ -430,11 +433,7 @@ def verificar_historico_vendas_geral(sistema:clas.SISTEMA):
     sistema.exibir_historico_vendas_geral()
 
 
-def exibir_conteudo_da_lista(lista:list):
-    
-    for e in lista:
-        print(e)
-        print()
+
 
 
 

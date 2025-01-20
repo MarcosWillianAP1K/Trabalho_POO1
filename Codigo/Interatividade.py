@@ -108,10 +108,10 @@ def menu_cliente(Sistema_principal: f.clas.SISTEMA, cliente:f.clas.CLIENTE):
         elif opcao == "5":
             cliente.remover_saldo(f.digitar_saldo())
         elif opcao == "6":
-            f.exibir_conteudo_da_lista(cliente.historico_compras)
+            print(cliente.historico_compras)
             f.pausar_terminal()
         elif opcao == "7":
-            f.exibir_conteudo_da_lista(cliente.historico_transacoes)
+            print(cliente.historico_transacoes)
             f.pausar_terminal()
         elif opcao == "0":
             break
@@ -360,6 +360,8 @@ def menu_gerente(Sistema_principal: f.clas.SISTEMA, gerente:f.clas.GERENTE):
             Estoque = f.verificar_estoque(Sistema_principal)
             
             if Estoque != None:
+                print(Estoque)
+                print("\nProdutos:\n")
                 Estoque.exibir_produtos_estoque()
                 f.pausar_terminal()
                 
@@ -426,6 +428,7 @@ def menu_inicial(Sistema_principal: f.clas.SISTEMA):
         print("0 - Sair")
         
         opcao = str(input("Digite a opcao desejada: "))
+        f.limpar_terminal()
         
         if opcao == "1":
             menu_gerente(Sistema_principal, f.verificar_gerente(Sistema_principal))
