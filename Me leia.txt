@@ -3,6 +3,8 @@ Antes de mais nada, execute o codigo a partir do arquivo main. Foi dividido em 4
 Classes para implementação das classes
 Funções do sistema, algumas funções que o sistem utiliza, tambem ja manipulando as classes.
 E a interatividade, local onde fica a  parte de menus e organização da funções. 
+E o main para iniciar o codigo. 
+Ao iniciar ja irar adicionar gerente, prateleira, estoque e produto, sendo eles apenas para ter algo ja no sistema, servindo para testes.
 
 Apesar que o intuito era para manter mais organizado, devo admitiro que a parte da interatividade ficou meio desorganizada.
 Mas afirmo que foi por causa do tempo, por conta de outras materias não tive tempo para organização no final do codigo.
