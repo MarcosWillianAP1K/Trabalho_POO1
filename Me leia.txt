@@ -6,5 +6,6 @@ E a interatividade, local onde fica a  parte de menus e organização da funçõ
 
 Apesar que o intuito era para manter mais organizado, devo admitiro que a parte da interatividade ficou meio desorganizada.
 Mas afirmo que foi por causa do tempo, por conta de outras materias não tive tempo para organização no final do codigo.
+Tanto que existe metodos que não utilizados no codigo final, pois não sobrou tempo para implementação deles.
 
 E por fim os testes era apenas testes, apenas desconsidere.
